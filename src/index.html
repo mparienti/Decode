@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Decode</title>
+    <meta charset="utf-8" />
+    <script src="js/vue.js"></script>
+    <script src="js/vkbeautify.js"></script>
+    <link rel="stylesheet" href="css/default.min.css">
+    <script src="js/highlight.min.js"></script>
+    <style>
+     .row .row { margin:  0 -1.5em; }
+     .col      { padding: 0  1.5em; }
+     .row:after {
+       content: "";
+       clear: both;
+       display: table;
+       margin: 0.5rem;
+     }
+     @media only screen { .col {
+       float: left;
+       width: 100%;
+       box-sizing: border-box;
+     }}
+     body {
+       width: 80%;
+       margin: auto;
+       padding-top: 2rem;
+     }
+     #result {
+       white-space: pre;
+       border: 1px solid black;
+       padding: 1rem;
+     }
+     #input {
+       min-height: 10rem;
+       padding: 0.1rem;
+     }
+     .c20 {
+       width: 20%;
+     }
+    </style>
+  </head>
+  <body>
+    <form id="editor">
+      <section class="row">
+        <textarea class="col" id="input" v-model="input"></textarea>
+      </section>
+      <section class="row">
+        <button class="col c20" @click.prevent="input=''">Clear</button>
+        <div class="col c20">
+          <label for="decode64">Decode64</label><input type="checkbox" id="decode64" v-model="decode64">
+          </select>
+        </div>
+        <div class="col c20">
+          <label for="beautify">Beautify</label><select id="beautify" v-model="beautify">
+          <option value="">none</option>
+          <option>xml</option>
+          <option>json</option>
+          <option>css</option>
+          <option>sql</option>
+          </select>
+        </div>
+      </section>
+      <section class="row">
+        <code class="col" id="result" v-html="result"></code>
+      </section>
+    </form>
+    <script>
+     new Vue({
+       el: '#editor',
+       data: {
+         input: '',
+         beautify: '',
+         error: '',
+         decode64: '',
+       },
+       computed: {
+         result: function() {
+           var r;
+           r = this.input;
+           if (r.trim() == '') {
+             return '';
+           }
+           if (this.decode64 == true) {
+             try {
+               r = window.atob(r);
+             } catch (e) {
+             }
+           }
+           try {
+             switch (this.beautify) {
+               case 'xml':
+                 r = vkbeautify.xml(r, 2);
+               case 'json':
+                 r = vkbeautify.json(r, 2);
+               case 'sql':
+                 r = vkbeautify.sql(r, 2);
+               case 'css':
+                 r =  vkbeautify.css(r, 2);
+             }
+           } catch (e) {
+           }
+           try {
+             r = hljs.highlightAuto(r);
+             console.log(r.language + ' detected');
+             return r.value;
+           } catch (e) {
+             return r;
+           }
+         }
+       },
+       watch: {
+         result: function (val, oldVal) {
+           //document.);
+         }
+       },
+       methods: {
+       }
+     });
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,25 @@
+
+* FAQ
+
+** What is it?
+
+A little script to decode base64 dump.
+
+
+** How to use it?
+
+Just open the ~src/index.html~ in your browser, and paste the base64 string into the input.
+
+
+** Can I use it on a public server?
+
+Absolutely not.
+
+** How does it work?
+
+This software uses and includes:
++ [[https://vuejs.org/][Vue.js]]
++ [[http://www.eslinstructor.net/vkbeautify/][vkBeautify]]
++ [[https://highlightjs.org/][Highlight.js]]
++ [[http://mourner.github.com/dead-simple-grid][Dead Simple Grid]]
+
