@@ -66,6 +66,14 @@
       </section>
     </form>
     <script>
+     var protect = f => { return a => {
+       try {
+         return f(a);
+       } catch(e){
+         return a;
+       }
+     }
+     };
      new Vue({
        el: '#editor',
        data: {
@@ -73,6 +81,7 @@
          beautify: '',
          error: '',
          decode64: '',
+         decodefct: (i) => i,
        },
        computed: {
          result: function() {
@@ -81,40 +90,30 @@
            if (r.trim() == '') {
              return '';
            }
-           if (this.decode64 == true) {
-             try {
-               r = window.atob(r);
-             } catch (e) {
-             }
-           }
-           try {
-             switch (this.beautify) {
-               case 'xml':
-                 r = vkbeautify.xml(r, 2);
-               case 'json':
-                 r = vkbeautify.json(r, 2);
-               case 'sql':
-                 r = vkbeautify.sql(r, 2);
-               case 'css':
-                 r =  vkbeautify.css(r, 2);
-             }
-           } catch (e) {
-           }
-           try {
-             r = hljs.highlightAuto(r);
-             console.log(r.language + ' detected');
-             return r.value;
-           } catch (e) {
-             return r;
-           }
+           r = this.decodefct(r);
+           return r;
          }
        },
        watch: {
-         result: function (val, oldVal) {
-           //document.);
-         }
+         decode64: function () { this.updateFct() },
+         beautify: function () { this.updateFct() },
        },
        methods: {
+         updateFct: function() {
+           var f = i => i;
+           var g, h;
+           if (this.decode64 == true) {
+             f = protect(window.atob);
+           }
+           if (['xml','json','xml','css'].indexOf(this.beautify) !== -1) {
+             g = f.bind();
+             f = a => vkbeautify[this.beautify](g(a),' ');
+           }
+           // protect
+           h = f.bind();
+           f = a => {a = hljs.highlightAuto(h(a)); return hljs.fixMarkup(a.value)};
+           this.decodefct = f;
+         },
        }
      });
     </script>
