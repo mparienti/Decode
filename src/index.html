@@ -107,7 +107,7 @@
            }
            if (['xml','json','xml','css'].indexOf(this.beautify) !== -1) {
              g = f.bind();
-             f = a => vkbeautify[this.beautify](g(a),' ');
+             f = protect(a => vkbeautify[this.beautify](g(a),' '));
            }
            // protect
            h = f.bind();
